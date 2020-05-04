@@ -3,14 +3,14 @@ import { Route, Switch } from 'react-router-dom';
 
 import Menu from '~/pages/_layouts/Menu';
 import Home from '~/pages/Home';
-import Pacientes from '~/pages/Pacientes';
+import Patients from '~/pages/Patients';
 
 function Routes() {
   return (
     <Switch>
       <Menu>
         <Route path="/" exact component={Home} />
-        <Route path="/pacientes" exact component={Pacientes} />
+        <Route path="/patients" exact component={Patients} />
       </Menu>
     </Switch>
   );
