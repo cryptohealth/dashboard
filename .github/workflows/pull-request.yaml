@@ -1,0 +1,34 @@
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    name: Distribution build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Fetch dependencies if not present
+        run: |
+          if [ ! -d "./node_modules" ]; then
+            yarn --frozen-lockfile
+          fi
+
+      - name: Builds distribution to build/ folder
+        run: yarn build

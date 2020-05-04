@@ -1,0 +1,80 @@
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Fetch dependencies if not present
+        run: |
+          if [ ! -d "./node_modules" ]; then
+            yarn --frozen-lockfile
+          fi
+
+      - name: Builds distribution to build/ folder
+        run: yarn build
+        env:
+          GENERATE_SOURCEMAP: false
+
+      - name: Compress build/ folder
+        run: tar -czvf build.tar.gz build/
+
+      - name: Upload distribution package
+        uses: actions/upload-artifact@v1
+        with:
+          name: distribution
+          path: build.tar.gz
+
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    env:
+      DOMAIN: https://cryptohealth-dashboard.surge.sh
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Downloads pre-built distribution folder
+        uses: actions/download-artifact@v1
+        with:
+          name: distribution
+
+      - name: Uncompress distribution folder
+        run: |
+          tar -xzvf distribution/build.tar.gz
+          rm -rf distribution/
+
+      - name: deploy to ${{ env.DOMAIN }}
+        uses: dswistowski/surge-sh-action@v1
+        with:
+          domain: ${{ env.DOMAIN }}
+          project: ./build
+          login: ${{ secrets.SURGE_LOGIN }}
+          token: ${{ secrets.SURGE_TOKEN }}
