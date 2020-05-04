@@ -1,0 +1,47 @@
+.drawer-patient {
+  width: 100%;
+  overflow: hidden;
+}
+
+.drawer-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #f2f2f2;
+  padding: 10px;
+}
+
+.drawer-patient .drawer-header .title {
+  color: #2c2c2c;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.drawer-body {
+  padding: 10px;
+  max-height: 1000px;
+  transition: all 0.5s ease-in;
+}
+
+.drawer-hide {
+  max-height: 0 !important;
+  transition: all 0.2s ease-out;
+}
+
+/* .icon-drawer-header {
+  transform: rotate(0.5turn);
+} */
+.title-datasheet {
+  color: black;
+  font-weight: 600;
+}
+
+#drawer-datasheet {
+  /* display: flex;
+  flex-direction: row; */
+}
+
+.drawer-datasheet-body {
+  margin-right: 15px;
+  margin-bottom: 15px;
+}

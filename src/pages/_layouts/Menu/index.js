@@ -1,160 +1,117 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import AppBar from '@material-ui/core/AppBar';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import HomeIcon from '@material-ui/icons/HomeOutlined';
+import Typography from '@material-ui/core/Typography';
+import HomeIcon from '@material-ui/icons/Home';
 import MenuIcon from '@material-ui/icons/Menu';
-import PersonIcon from '@material-ui/icons/Person';
-import PropTypes from 'prop-types';
+import PatientsIcon from '@material-ui/icons/People';
+import clsx from 'clsx';
 
-const drawerWidth = 240;
+import logo from '~/assets/logo.png';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
+const useStyles = makeStyles({
+  list: {
+    width: 250,
   },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
+  fullList: {
+    width: 'auto',
   },
-  appBar: {
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
-  },
-  // necessary for content to be below app bar
-  toolbar: theme.mixins.toolbar,
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
+});
 
-const rotas = [
+const routes = [
   {
     title: 'Home',
-    icon: <HomeIcon />,
     url: '/',
+    icon: <HomeIcon />,
   },
   {
-    title: 'Paciente',
-    icon: <PersonIcon />,
-    url: '/pacientes',
+    title: 'Pacientes',
+    url: '/patients',
+    icon: <PatientsIcon />,
   },
 ];
 
-function ResponsiveDrawer(props) {
-  const { window } = props;
+export default function TemporaryDrawer({ children }) {
   const classes = useStyles();
-  const theme = useTheme();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [state, setState] = useState({ left: false });
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
   };
 
-  const drawer = (
-    <div>
-      <div className={classes.toolbar} />
-      <Divider />
-      <List>
-        {rotas.map(({ title, icon, url }) => (
-          <Link key={title} to={url}>
-            <ListItem button key={title}>
-              <ListItemIcon>{icon}</ListItemIcon>
-              <ListItemText primary={title} />
-            </ListItem>
-          </Link>
-        ))}
-      </List>
-      <Divider />
-    </div>
-  );
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-
-      <AppBar position="fixed" className={classes.appBar}>
+    <>
+      <AppBar position="static">
         <Toolbar>
           <IconButton
-            color="inherit"
-            aria-label="open drawer"
             edge="start"
-            onClick={handleDrawerToggle}
             className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer('left', true)}
           >
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Dr. Cosmo Plunc
+          </Typography>
         </Toolbar>
       </AppBar>
-      <nav className={classes.drawer} aria-label="mailbox folders">
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Hidden smUp implementation="css">
-          <Drawer
-            container={container}
-            variant="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
+      <Drawer
+        anchor="left"
+        open={state.left}
+        onClose={toggleDrawer('left', false)}
+      >
+        <div
+          className={clsx(classes.list)}
+          role="presentation"
+          onClick={toggleDrawer('left', false)}
+          onKeyDown={toggleDrawer('left', false)}
+        >
+          <img
+            style={{
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              display: 'block',
+              width: 250,
+              padding: 15,
             }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden xsDown implementation="css">
-          <Drawer
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            variant="permanent"
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-      </nav>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        {props.children}
-      </main>
-    </div>
+            src={logo}
+            alt="Logo Crypto Health"
+          />
+          <Divider />
+          <List>
+            {routes.map(({ title, url, icon }) => (
+              <Link to={url}>
+                <ListItem button key={title}>
+                  <ListItemIcon>{icon}</ListItemIcon>
+                  <ListItemText primary={title} />
+                </ListItem>
+              </Link>
+            ))}
+          </List>
+          <Divider />
+        </div>
+      </Drawer>
+      <div style={{ padding: 20 }}>{children}</div>
+    </>
   );
 }
-
-ResponsiveDrawer.propTypes = {
-  window: PropTypes.func,
-};
-
-export default ResponsiveDrawer;
