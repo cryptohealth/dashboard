@@ -42,7 +42,7 @@ const routes = [
   },
 ];
 
-export default function TemporaryDrawer({ children }) {
+export default function Menu({ children }) {
   const classes = useStyles();
   const [state, setState] = useState({ left: false });
 
@@ -71,7 +71,7 @@ export default function TemporaryDrawer({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Dr. Cosmo Plunc
+            Dr. Agnaldo Pereira
           </Typography>
         </Toolbar>
       </AppBar>
@@ -100,8 +100,8 @@ export default function TemporaryDrawer({ children }) {
           <Divider />
           <List>
             {routes.map(({ title, url, icon }) => (
-              <Link to={url}>
-                <ListItem button key={title}>
+              <Link key={title} to={url}>
+                <ListItem button>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={title} />
                 </ListItem>
