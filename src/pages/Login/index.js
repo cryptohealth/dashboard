@@ -1,4 +1,6 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+
 import { Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -17,6 +19,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const { margin } = useStyles();
 
+  const history = useHistory();
+
   return (
     <Screen image={cover} filter="rgba(255, 255, 255, 0.8)">
       <Container>
@@ -30,7 +34,13 @@ export default function Login() {
             <div>
               <Input className={margin} label="CPF" />
               <Input className={margin} label="Senha" type="password" />
-              <Button className={margin}>Entrar</Button>
+              <Button
+                type="button"
+                className={margin}
+                onClick={() => history.push('/patients')}
+              >
+                Entrar
+              </Button>
             </div>
             <div className={margin}>
               <ForgotPassword>

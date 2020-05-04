@@ -6,7 +6,7 @@ import { Container } from './styles';
 
 export function Button(props) {
   const { children } = props;
-  return <Container>{children}</Container>;
+  return <Container {...props}>{children}</Container>;
 }
 
 Button.propTypes = {
