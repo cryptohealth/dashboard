@@ -18,7 +18,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import PatientsIcon from '@material-ui/icons/People';
 import clsx from 'clsx';
 
-import logo from '~/assets/logo.png';
+import logo from '~/assets/images/logo.png';
 
 const useStyles = makeStyles({
   list: {
